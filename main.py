@@ -24,7 +24,7 @@ def load_data(file):
     with open(file, 'r', newline='') as f:
         reader = csv.reader(f, delimiter=',', quotechar='"')
         for line in reader:
-            lines.append(line)
+            lines.append(line[1:])
 
     runners = []
     for line in lines[2:13]:
@@ -35,13 +35,13 @@ def load_data(file):
         runner.can_run[num_slots] = runner.can_run[num_slots - 1]
         runners.append(runner)
 
-    for line in lines[19:30]:
+    for line in lines[20:31]:
         short = line[1]
         runner = [r for r in runners if r.short == short][0]
         runner.can_run[(num_slots + 1):(2 * num_slots + 1)] = map(bool, line[2:(num_slots + 2)])
         runner.can_run[2 * num_slots + 1] = runner.can_run[2 * num_slots]
 
-    for line in lines[36:47]:
+    for line in lines[38:49]:
         short = line[1]
         runner = [r for r in runners if r.short == short][0]
         runner.can_run[(2 * num_slots + 2):(3 * num_slots + 2)] = map(bool, line[2:(num_slots + 2)])
