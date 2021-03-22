@@ -104,7 +104,9 @@ def eval_first_runner(first, all):
         if used_slots < best_used_slots and total_km >= 200:
             best_used_slots = used_slots
             best_km = total_km
-            best_slot_assignments = slot_assignments
+            best_slot_assignments = [slot_assignments]
+        elif used_slots == best_used_slots and total_km >= 200:
+            best_slot_assignments.append(slot_assignments)
             
     return best_km, best_used_slots, best_slot_assignments
 
@@ -136,8 +138,15 @@ for result in results:
         best_used_slots = used_slots
         best_km = total_km
         best_slot_assignments = slot_assignments
+    elif used_slots == best_used_slots and total_km >= 200:
+        best_slot_assignments += slot_assignments
 
-print(best_used_slots, best_km, best_slot_assignments)
+for assign in best_slot_assignments:
+    full_slots = [s for s in assign if len(s) > 0]
+    print(' '.join(full_slots[0:len(runners)]))
+    
+    for day in range(3):
+        slots = assign[(day*(num_slots+1)):((day + 1)*(num_slots+1))]
+        print("{}: {}".format(day+1, ",".join([(s if len(s) > 0 else '  ') for s in slots])))
 
-full_slots = [s for s in best_slot_assignments if len(s) > 0]
-print(' '.join(full_slots[0:len(runners)]))
+print(best_used_slots, best_km)
