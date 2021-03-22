@@ -70,7 +70,7 @@ def eval_permutation(runners):
         if not ok:
             break
 
-        total_km += km_per_run if used_slots % num_slots != 0 else km_per_run / 2
+        total_km += km_per_run
         slot_assignments[used_slots] = runner.short
         used_slots += 1
 
