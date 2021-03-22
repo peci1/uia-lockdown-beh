@@ -3,14 +3,14 @@ import math
 import sys
 
 km_per_run = 6.0
-num_slots = 16
+num_slots = 17
 
 
 class Runner:
     def __init__(self, name, short):
         self.name = name
         self.short = short
-        self.can_run = [0] * ((num_slots + 1) * 3)
+        self.can_run = [0] * ((num_slots) * 3)
 
     def __str__(self):
         return "{} ({})".format(self.name, self.short)
@@ -32,20 +32,17 @@ def load_data(file):
         short = line[1]
         runner = Runner(name, short)
         runner.can_run[0:(num_slots)] = map(bool, line[2:(num_slots + 2)])
-        runner.can_run[num_slots] = runner.can_run[num_slots - 1]
         runners.append(runner)
 
     for line in lines[20:31]:
         short = line[1]
         runner = [r for r in runners if r.short == short][0]
-        runner.can_run[(num_slots + 1):(2 * num_slots + 1)] = map(bool, line[2:(num_slots + 2)])
-        runner.can_run[2 * num_slots + 1] = runner.can_run[2 * num_slots]
+        runner.can_run[num_slots:(2 * num_slots)] = map(bool, line[2:(num_slots + 2)])
 
     for line in lines[38:49]:
         short = line[1]
         runner = [r for r in runners if r.short == short][0]
-        runner.can_run[(2 * num_slots + 2):(3 * num_slots + 2)] = map(bool, line[2:(num_slots + 2)])
-        runner.can_run[3 * num_slots + 2] = runner.can_run[3 * num_slots + 1]
+        runner.can_run[(2 * num_slots):(3 * num_slots)] = map(bool, line[2:(num_slots + 2)])
 
     return runners
 
@@ -58,22 +55,22 @@ def eval_permutation(runners):
     runner_id = 0
     total_km = 0
 
-    slot_assignments = [''] * (3 * (num_slots + 1))
+    slot_assignments = [''] * (3 * num_slots)
 
-    while total_km < 200 and used_slots < 3 * (num_slots + 1):
+    while total_km < 200 and used_slots < 3 * num_slots:
         runner = runners[runner_id]
 
         ok = True
         while not runner.can_run[used_slots]:
             used_slots += 1
-            if used_slots >= 3 * (num_slots + 1):
+            if used_slots >= 3 * num_slots:
                 ok = False
                 break
 
         if not ok:
             break
 
-        total_km += km_per_run if used_slots % (num_slots + 1) != 0 else km_per_run / 2
+        total_km += km_per_run if used_slots % num_slots != 0 else km_per_run / 2
         slot_assignments[used_slots] = runner.short
         used_slots += 1
 
@@ -88,7 +85,7 @@ def eval_first_runner(first, all):
     
     others = [r for r in all if r.short != first.short]
 
-    best_used_slots = 3 * (num_slots + 1) + 1
+    best_used_slots = 3 * num_slots + 1
     best_slot_assignments = list()
     best_km = 0
     
@@ -114,6 +111,8 @@ def eval_first_runner(first, all):
 f = "D:/Download/Vyzva 2 vypocty - Kdy muzu.csv"
 if len(sys.argv) > 1:
     f = sys.argv[1]
+if len(sys.argv) > 2:
+    num_slots = int(sys.argv[2])
 
 runners = load_data(f)
 
@@ -121,7 +120,7 @@ from itertools import permutations
 import multiprocessing
 from joblib import Parallel, delayed
 
-best_used_slots = 3*(num_slots+1)+1
+best_used_slots = 3*num_slots+1
 best_slot_assignments = list()
 best_km = 0
 
@@ -146,7 +145,7 @@ for assign in best_slot_assignments:
     print(' '.join(full_slots[0:len(runners)]))
     
     for day in range(3):
-        slots = assign[(day*(num_slots+1)):((day + 1)*(num_slots+1))]
+        slots = assign[(day*num_slots):((day + 1)*num_slots)]
         print("{}: {}".format(day+1, ",".join([(s if len(s) > 0 else '  ') for s in slots])))
 
 print(best_used_slots, best_km)
