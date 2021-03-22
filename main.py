@@ -31,7 +31,7 @@ def load_data(file):
         name = line[0]
         short = line[1]
         runner = Runner(name, short)
-        runner.can_run[0:(num_slots)] = map(bool, line[2:(num_slots + 2)])
+        runner.can_run[0:(num_slots)] = map(lambda s: s == "1", line[2:(num_slots + 2)])
         runners.append(runner)
 
     for line in lines[20:31]:
