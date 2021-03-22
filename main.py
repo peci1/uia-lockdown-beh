@@ -140,4 +140,4 @@ for result in results:
 print(best_used_slots, best_km, best_slot_assignments)
 
 full_slots = [s for s in best_slot_assignments if len(s) > 0]
-print(full_slots[len(runners)])
+print(' '.join(full_slots[0:len(runners)]))
